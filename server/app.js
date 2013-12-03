@@ -43,7 +43,8 @@ http.createServer(function (request, response) {
                                 response.end();
                             }
                             else{
-                                response.writeHead(200, {'Content-Type': 'text/plain'});
+                                response.writeHead(200, {'Content-Type': 'text/plain',
+							'Access-Control-Allow-Origin' : '*'});
                                 response.end(hash);
                             }
                         });
@@ -56,7 +57,9 @@ http.createServer(function (request, response) {
                                     response.end();
                                 }
                                 else{
-                                    response.writeHead(200, {'Content-Type': 'text/plain'});
+                                    //response.writeHead(200, {'Content-Type': 'text/plain'});
+                                    response.writeHead(200, {'Content-Type': 'text/plain',
+							     'Access-Control-Allow-Origin' : '*'});
                                     response.end(result.rows[0].note);
                                 }
                             });

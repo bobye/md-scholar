@@ -60,11 +60,22 @@
 				left: 0.25em;
 				display: none;
 			}
+			.entry {
+			color: #00a2e8;
+			display: inline;
+			}
+			.description {
+			color: #000;
+			background: #888;
+			display:none;
+			position:absolute;
+			width:400px;
+			}			
 		</style>
 	</head>
 	<body>
 		<div id="container">
-			<textarea id="paper">Markdown Supported. Just Type.</textarea>
+		  <textarea id="paper">Markdown Supported. Just Type.</textarea>
 			<div id="preview"></div>
 			<textarea id="clone" disabled="true"></textarea>
 			<div id="previewmode" class="mode">Preview</div>
@@ -73,7 +84,8 @@
 			<div id="loadingmode" class="mode">Loading...</div>
 		</div>
 		<script type="text/javascript" src="js/lib/jquery-1.8.2.min.js"></script>
-		<script type="text/javascript" src="js/lib/markdown.min.js"></script>
+		<script type="text/javascript" src="js/lib/marked.min.js"></script>
 		<script type="text/javascript" src="js/pencil.js"></script>
 	</body>
 </html>
+

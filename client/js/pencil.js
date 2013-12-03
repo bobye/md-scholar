@@ -1,4 +1,21 @@
 // Pencil App - WARNING : Rampant jQuery Selector Abuse and Pathetic Variable Naming follows. I was lazy.
+marked.setOptions({
+  gfm: true,
+  highlight: function (code, lang, callback) {
+    pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
+      if (err) return callback(err);
+      callback(null, result.toString());
+    });
+  },
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false,
+  langPrefix: 'lang-'
+});
+
 var get = function(nid, preview){
     if(nid == 'intro'){
 	data = "Pencil - A Simple, Distraction Free Markdown Editor\n========================================\n\nI made Pencil because I needed an ** *immersive, distraction free and simple* ** environment to write out my ideas, blog posts, notes etc. Most of the 'distraction-free' editors available did not satisfy me. They either had interfaces that got in the way, or had hideous backgrounds, or had color schemes that hurt my eye. To top it off they were impossible to use on my phone or iPad. \n\nSo, here's [Pencil](/). Handles the **tab key** properly, easy to use on any screen size and **extremely minimal interface**.\n\nJust you, your text and Markdown.\n\nUsage:\n\n* Type all you want in edit mode. Markdown is supported.\n* To preview, hit Ctrl/Cmd+P or click/tap to the right of the text. Do it again to get back in edit mode.\n* To save, hit Ctrl/Cmd+S or click/tap to the left of the text. Save the URL you get.\n* To edit your note later, just visit the URL of the note.\n* Append #p to a URL to open it in Preview mode.\n\nOur users are positively *gushing* about us:\n\n>This is super awesome! If only, I had had Pencil before the elections, \n>I might have actually won!\n\n>Matt Baloney, 2012 Presidential Contestant\n\n*P.S.: Hit F11 for heaven ;)*";
@@ -14,7 +31,7 @@ var get = function(nid, preview){
     $('#paper').prop('disabled', true);
     $.ajax({
 	type: 'POST',
-	url: '/api/note/get',
+	url: 'http://127.0.0.1:3214/api/note/get',
 	data: {id: nid},
 	success: function(data, textStatus, xhr){
 	    $('#paper').val(data);
@@ -81,9 +98,15 @@ var togglePreview = function(){
     var $p = $('#paper'), $pre = $('#preview');
     if($p.is(':visible')){
 	$p.blur().hide();
-	$pre.html(markdown.toHTML($p.val())).show();
+	$pre.html(marked($p.val())).show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
+$(".entry").mouseover(function() {
+    $(this).children(".description").show("slow");
+}).mouseout(function() {
+    $(this).children(".description").hide();
+});
+
     }
     else{
 	$pre.hide();
@@ -102,7 +125,7 @@ var save = function(){
     $('#savingmode').show();
     $.ajax({
 	type: 'POST',
-	url: '/api/note/edit',
+	url: 'http://127.0.0.1:3214/api/note/edit',
 	data: {t: text, id: tid},
 	success: function(data, textStatus, xhr){
 	    window.setTimeout(function(){ $('#savedlabel').hide(); }, 2000);
