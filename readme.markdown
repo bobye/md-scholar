@@ -42,4 +42,32 @@ This is the setup I'm using to host Pencil. It might or might not work well for 
 	* hash VARCHAR UNIQUE
 * Run app.js using node.
 
+
+Sample configuration for Nginx
+
+```
+    upstream dummy.com {
+		server 127.0.0.1:3214;
+	}
+
+    server {
+        listen       8080;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            root   /Users/jxy198/Dropbox/code/pencil/client;
+            try_files $uri  /index.html;
+
+	        limit_except GET {
+				proxy_pass http://dummy.com;
+			}
+        }
+	}
+```
+
+
 *A (hopefully) quality product from a sleepy samurai*
