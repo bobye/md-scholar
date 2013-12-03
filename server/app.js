@@ -2,11 +2,16 @@ var qs = require('querystring');
 var http = require('http');
 var url = require('url');
 var pg = require('pg');
-var conString = "tcp://user:pass@localhost/db";
+var conString = "tcp://jxy198@127.0.0.1/pencildb";
 
 http.createServer(function (request, response) {
+
+    console.log([request.method, request.url]);
+
     if (request.method == 'POST') {
         var body = '';
+
+
         request.on('data', function (data) {
             body += data;
             if (body.length > 1e6) {
@@ -14,6 +19,7 @@ http.createServer(function (request, response) {
                 response.end();
             }
         });
+
         request.on('end', function () {
             var POST = qs.parse(body);
             var path = url.parse(request.url).pathname;
@@ -24,11 +30,13 @@ http.createServer(function (request, response) {
                 }
                 else{
                     if(path == '/api/note/edit'){
+
                         var hash = Date.now().toString(36)+parseInt(Math.random()*1000).toString(36);
-                        var q = 'INSERT INTO notes (text, hash) VALUES ($1, $2)';
+                        var q = 'INSERT INTO notes (note, hash) VALUES ($1, $2)';
                         if(POST.id && POST.id.length > 0)
-                            q = 'UPDATE notes SET text = $1 WHERE hash = $2', hash = POST.id;
+                            q = 'UPDATE notes SET note = $1 WHERE hash = $2', hash = POST.id;
                         v = [POST.t, hash];
+
                         client.query(q + ' RETURNING id', v, function(err, result){
                             if(err || !(result.rows || result.rows.length > 0)){
                                 response.writeHead(500);
@@ -49,7 +57,7 @@ http.createServer(function (request, response) {
                                 }
                                 else{
                                     response.writeHead(200, {'Content-Type': 'text/plain'});
-                                    response.end(result.rows[0].text);
+                                    response.end(result.rows[0].note);
                                 }
                             });
                         }
