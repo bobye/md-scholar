@@ -115,9 +115,8 @@ var togglePreview = function(){
 		authors : [],
 		title : null,
 		year : null,
-		pages : null,
 		ee : null,
-		booktitle : null,
+		venue : null,
 		render : function() {
 		    if (ent.db == 'dblp') {
 			ec.html(ent.key.split('/').slice(-1)[0] 
@@ -127,7 +126,7 @@ var togglePreview = function(){
 		    ec.children(".description").html(
 			'<i>'+ ent.authors.join(', ') + '</i> '
 			    + '<b>' + ent.title + '</b> '
-			    + ent.booktitle + ', ' + ent.pages + ', ' + ent.year
+			    + ent.venue + ', ' + ent.year
 			    + ' [<a href="' + ent.ee + '">download</a>]'
 			    + ' [<a href="http://dblp.uni-trier.de/rec/bibtex/' + ent.key + '">bibtex</a>]');   
 		    
@@ -154,9 +153,11 @@ var togglePreview = function(){
 			});
 			ent.title = xml_node.find('title').text();
 			ent.year = xml_node.find('year').text();
-			ent.pages = xml_node.find('pages').text();		
 			ent.ee = xml_node.find('ee').text();	
-			ent.booktitle = xml_node.find('booktitle').text();
+			ent.venue = xml_node.find('booktitle').text();
+			if (ent.venue == '') {
+			    ent.venue = xml_node.find('journal').text();
+			}
 			ent.render();
 		    },
 		    error: function(data, textStatus, xhr) {
