@@ -101,11 +101,88 @@ var togglePreview = function(){
 	$pre.html(marked($p.val())).show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
-$(".entry").mouseover(function() {
-    $(this).children(".description").show("slow");
-}).mouseout(function() {
-    $(this).children(".description").hide();
-});
+
+
+
+
+	$(".entry").each(function () {
+
+	    var ec =$(this);
+
+	    var ent = {
+		db : ec.attr('db'),		
+		key : ec.attr('key'),
+		authors : [],
+		title : null,
+		year : null,
+		pages : null,
+		ee : null,
+		booktitle : null,
+		render : function() {
+		    if (ent.db == 'dblp') {
+			ec.html(ent.key.split('/').slice(-1)[0] 
+				+ '<span class="description"></span>');
+		    }
+
+		    ec.children(".description").html(
+			'<i>'+ ent.authors.join(', ') + '</i> '
+			    + '<b>' + ent.title + '</b> '
+			    + ent.booktitle + ', ' + ent.pages + ', ' + ent.year
+			    + ' [<a href="' + ent.ee + '">download</a>]'
+			    + ' [<a href="http://dblp.uni-trier.de/rec/bibtex/' + ent.key + '">bibtex</a>]');   
+		    
+		    ec.find('a').attr('target', '_blank');
+		}
+	    }
+
+	    	    
+	    if (ent.db == 'dblp') {
+
+		ec.html(ent.key.split('/').slice(-1)[0] 
+			+ '<span class="description"></span>');
+
+		$.ajax({
+		    type: 'POST',
+		    url: '/dblp/' + ent.key + '.xml',
+		    dataType: 'xml',
+		    //async: false,
+		    success: function(data, textStatus, xhr){
+			var xml_node = $('dblp', data);
+			xml_node.find('author').each(function() {
+			    ent.authors.push($(this).text());
+
+			});
+			ent.title = xml_node.find('title').text();
+			ent.year = xml_node.find('year').text();
+			ent.pages = xml_node.find('pages').text();		
+			ent.ee = xml_node.find('ee').text();	
+			ent.booktitle = xml_node.find('booktitle').text();
+			ent.render();
+		    },
+		    error: function(data, textStatus, xhr) {
+			console.log('error');
+			return;
+		    }
+		});
+
+	    }
+
+	   
+ 
+	});
+
+	
+	var _hideentry = null;
+	$(".entry").mouseenter(function() {
+	    if (_hideentry) _hideentry();
+	    $(this).children(".description").show();
+	    _hideentry = function () { $(this).children(".description").hide(); }
+
+	}).mouseleave(function() {
+	    $(this).children(".description").hide();
+	});
+
+
 
     }
     else{

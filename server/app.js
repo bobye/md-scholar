@@ -44,7 +44,7 @@ http.createServer(function (request, response) {
                             }
                             else{
                                 response.writeHead(200, {'Content-Type': 'text/plain',
-							'Access-Control-Allow-Origin' : '*'});
+							'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'});
                                 response.end(hash);
                             }
                         });
@@ -59,7 +59,7 @@ http.createServer(function (request, response) {
                                 else{
                                     //response.writeHead(200, {'Content-Type': 'text/plain'});
                                     response.writeHead(200, {'Content-Type': 'text/plain',
-							     'Access-Control-Allow-Origin' : '*'});
+							     'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'});
                                     response.end(result.rows[0].note);
                                 }
                             });
