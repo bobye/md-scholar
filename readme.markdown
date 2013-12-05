@@ -34,11 +34,11 @@ If you are using Pencil in your project, I would be really happy if you could li
 This is the setup I'm using to host Pencil. It might or might not work well for you.
 
 * Nginx serves the static client side files (everything in the client directory).
-* Requests to the server API are proxied via Nginx to nodejs running as an upstream server.
+* Requests to the server API are proxied via Nginx to ~~nodejs~~, dblp, arXiv
 * The node app requires the 'pg' package. Install using 'npm install pg'.
 * Create a postgres table with schema:
 	* id SERIAL PKEY
-	* note VARCHAR
+	* note VARCHAR(3000)
 	* hash VARCHAR UNIQUE
 * Run app.js using node.
 
@@ -46,10 +46,6 @@ This is the setup I'm using to host Pencil. It might or might not work well for 
 Sample configuration for Nginx
 
 ```
-    upstream dummy.com {
-		server 127.0.0.1:3214;
-	}
-
     server {
         listen       8080;
         server_name  localhost;
@@ -61,12 +57,15 @@ Sample configuration for Nginx
         location / {
             root   /Users/jxy198/Dropbox/code/pencil/client;
             try_files $uri  /index.html;
-
-	        limit_except GET {
-				proxy_pass http://dummy.com;
-			}
         }
+	location /dblp {
+	    proxy_pass http://dblp.uni-trier.de/rec/bibtex;
 	}
+
+	location /arxiv {
+	    proxy_pass http://export.arxiv.org/api;
+	}
+    }
 ```
 
 
