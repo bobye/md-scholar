@@ -113,22 +113,33 @@ var togglePreview = function(){
 		db : ec.attr('db'),		
 		key : ec.attr('key'),
 		authors : [],
-		title : null,
-		year : null,
-		ee : null,
-		venue : null,
+		title : '',
+		year : '',
+		ee : '',
+		abs : '',
+		venue : '',
+		bib : '',
 		render : function() {
 		    if (ent.db == 'dblp') {
 			ec.html(ent.key.split('/').slice(-1)[0] 
+			       + '<span class="description"></span>'); 
+		    } else {
+			ec.html(ent.authors[0].split(" ").slice(-1)[0] 
+				+ ent.authors.join(':').match(/:[A-Z]/g).join('').replace(/:/g,'')
+				+ ent.year.substring(2,4)
 				+ '<span class="description"></span>');
 		    }
+	
+			
+
+		    var description = '<i>'+ ent.authors.join(', ') + '</i> '
+			+ '<b>' + ent.title + '</b>, '
+			+ ent.venue + ', ' + ent.year;
+		    if (ent.ee != '') description = description + ' [<a href="' + ent.ee + '">download</a>]';
+		    if (ent.bib != '') description = description + ' [<a href="' + ent.bib + '">bibtex</a>]';
 
 		    ec.children(".description").html(
-			'<i>'+ ent.authors.join(', ') + '</i> '
-			    + '<b>' + ent.title + '</b> '
-			    + ent.venue + ', ' + ent.year
-			    + ' [<a href="' + ent.ee + '">download</a>]'
-			    + ' [<a href="http://dblp.uni-trier.de/rec/bibtex/' + ent.key + '">bibtex</a>]');   
+			description);   
 		    
 		    ec.find('a').attr('target', '_blank');
 		}
@@ -154,6 +165,7 @@ var togglePreview = function(){
 			ent.title = xml_node.find('title').text();
 			ent.year = xml_node.find('year').text();
 			ent.ee = xml_node.find('ee').text();	
+			ent.bib = 'http://dblp.uni-trier.de/rec/bibtex/' + ent.key;
 			ent.venue = xml_node.find('booktitle').text();
 			if (ent.venue == '') {
 			    ent.venue = xml_node.find('journal').text();
@@ -167,6 +179,42 @@ var togglePreview = function(){
 		});
 
 	    }
+	    else if (ent.db == 'arxiv') {
+
+		$.ajax({
+		    type: 'GET',
+		    url: '/arxiv/query',
+		    data: {
+			id_list: ent.key,
+		    },
+		    dataType: 'xml',
+		    success: function(data, textStatus, xhr){
+			var xml_node = $('entry', data);
+			xml_node.find('name').each(function() {
+			    ent.authors.push($(this).text());
+			});
+			ent.title = xml_node.find('title').text();
+			ent.year = xml_node.find('published').text().substring(0,4);
+			ent.ee = 'http://arxiv.org/pdf/'+key;
+			ent.abs = xml_node.find('summary').text();
+			
+			var journal = xml_node.find('journal_ref').text();
+			if (journal == '')
+			    ent.venue = 'eprint arXiv:'+key;
+			else
+			    ent.venue = journal + ' (eprint arXiv:' + key + ')';
+
+			ent.render();
+		    },
+		    error: function(data, textStatus, xhr) {
+			console.log('error');
+			return;
+		    }
+		});
+	    }
+	    else {
+	    }
+
 
 	   
  
