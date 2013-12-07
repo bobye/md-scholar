@@ -29,9 +29,16 @@ var get = function(nid, preview){
     if($('#loadingmode').is(':visible')) return;
     $('#loadingmode').show();
     $('#paper').prop('disabled', true);
+
+    if (nid == 'new') {
+	var password = prompt("Enter the protected password for create new markdown file.");
+	var filename = prompt("Enter the filename:");
+//console.log($.md5(password));
+    }
+
     $.ajax({
 	type: 'POST',
-	url: 'http://127.0.0.1:3214/api/note/get',
+	url: '/api/note/get',
 	data: {id: nid},
 	success: function(data, textStatus, xhr){
 	    $('#paper').val(data);
@@ -251,7 +258,7 @@ var save = function(){
     $('#savingmode').show();
     $.ajax({
 	type: 'POST',
-	url: 'http://127.0.0.1:3214/api/note/edit',
+        url: '/api/note/edit',
 	data: {t: text, id: tid},
 	success: function(data, textStatus, xhr){
 	    window.setTimeout(function(){ $('#savedlabel').hide(); }, 2000);
