@@ -46,18 +46,26 @@ This is the setup I'm using to host Pencil. It might or might not work well for 
 Sample configuration for Nginx
 
 ```
+    upstream app_nodejs {
+        server 127.0.0.1:3215;
+    }
+
     server {
         listen       8080;
         server_name  localhost;
 
         #charset koi8-r;
-
         #access_log  logs/host.access.log  main;
 
         location / {
-            root   /Users/jxy198/Dropbox/code/pencil/client;
-            try_files $uri  /index.html;
+            root   /Users/bobye/Dropbox/code/pencil/client;
+            try_files  $uri  /index.html;
         }
+
+	location /api {
+	    proxy_pass http://app_nodejs;
+	}
+
 	location /dblp {
 	    proxy_pass http://dblp.uni-trier.de/rec/bibtex;
 	}
@@ -65,7 +73,6 @@ Sample configuration for Nginx
 	location /arxiv {
 	    proxy_pass http://export.arxiv.org/api;
 	}
-    }
 ```
 
 
