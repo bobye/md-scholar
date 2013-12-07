@@ -34,8 +34,8 @@ If you are using Pencil in your project, I would be really happy if you could li
 This is the setup I'm using to host Pencil. It might or might not work well for you.
 
 * Nginx serves the static client side files (everything in the client directory).
-* Requests to the server API are proxied via Nginx to ~~nodejs~~, dblp, arXiv
-* The node app requires the 'pg' package. Install using 'npm install pg'.
+* Requests to the server API are proxied via Nginx to nodejs(as upstream), dblp, and arXiv
+* The node app requires the 'pg' package and some external packages, see server/package.json. 
 * Create a postgres table with schema:
 	* id SERIAL PKEY
 	* note VARCHAR(3000)
