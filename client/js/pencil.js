@@ -263,7 +263,7 @@ var save = function(){
 	success: function(data, textStatus, xhr){
 	    window.setTimeout(function(){ $('#savedlabel').hide(); }, 2000);
 	    $('#savedlabel').show();
-	    console.log('Saved to http://pencil.asleepysamurai.com/' + data);
+	    console.log('Saved to server' + data);
 
 	    if(!tid){
 		window.prompt('Saved. Use this URL in the addressbar for editing later', window.location.hostname + '/' + data + '#p');
@@ -283,6 +283,48 @@ var save = function(){
 	}
     });
 };
+
+
+var create = function(){
+    var name = prompt("Enter the note name:");
+
+    if($('#savingmode').is(':visible')) return;
+    var text = $('#paper').val();
+    //if(text.length < 1 || text == $('#paper').text()) return;				
+    $('#paper').prop('disabled', true);
+    $('#savingmode').show();
+    $.ajax({//copy existing content and save to a new note by name
+	type: 'POST',
+        url: '/api/note/create',
+	data: {t:text, id:name},
+	success: function(data, textStatus, xhr) {
+	    window.setTimeout(function(){ $('#savedlabel').hide(); }, 2000);
+	    $('#savedlabel').show();
+	    console.log('Saved to server' + data);
+
+	    //if(!tid){
+		window.prompt('Saved. Use this URL in the addressbar for editing later', window.location.hostname + '/' + data + '#p');
+		history.pushState(null, 'Pencil', data);
+	    //}
+	    tid = data;
+
+	    $('#paper').prop('disabled', false);
+	    $('#savingmode').hide();
+	},
+	error: function(xhr, textStatus, error) {
+	    window.alert('Error occurred while trying to create - not registered or file existed');
+	    console.log([xhr, textStatus, error]);
+
+	    $('#paper').prop('disabled', false);
+	    $('#savingmode').hide();
+	}
+    });
+};
+var rename = function(){
+};
+var fdelete = function(){
+};
+
 var handleClick = function(ev, x){
     var dbw = $(document).width(), pw = $('#paper').is(':visible') ? $('#paper') : $('#preview'), pw = pw.width();
     if(x > (dbw+pw)/2)
@@ -324,10 +366,16 @@ $(document).ready(function(){
 	.focus();
 
     $(document).bind('keydown', function(ev){
-	if(ev.which == 80 && (ev.ctrlKey || ev.metaKey))
+	if(ev.which == 80 && (ev.ctrlKey || ev.metaKey)) //P
 	    togglePreview(), ev.preventDefault();
-	else if(ev.which == 83 && (ev.ctrlKey || ev.metaKey))
+	else if(ev.which == 83 && (ev.ctrlKey || ev.metaKey)) //S
 	    save(), ev.preventDefault();
+	else if (ev.which == 78 && (ev.ctrlKey || ev.metaKey)) //N
+	    create(), ev.preventDefault();
+	else if (ev.which == 87 && (ev.ctrlKey || ev.metaKey)) //W
+	    rename(), ev.preventDefault();
+	else if (ev.which == 127 && (ev.ctrlKey || ev.metaKey)) //DEL
+	    fdelete(), ev.preventDefault();
     });
 
     var sx;
