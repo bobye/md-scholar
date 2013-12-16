@@ -1,25 +1,26 @@
 // Pencil App - WARNING : Rampant jQuery Selector Abuse and Pathetic Variable Naming follows. I was lazy.
 marked.setOptions({
-  gfm: true,
-  highlight: function (code, lang, callback) {
-    pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
-      if (err) return callback(err);
-      callback(null, result.toString());
-    });
-  },
-  tables: true,
-  breaks: true,
-  pedantic: false,
-  sanitize: true,
-  smartLists: true,
-  smartypants: false,
-  langPrefix: 'lang-'
+    gfm: true,
+    highlight: function (code, lang, callback) {
+	pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
+	    if (err) return callback(err);
+	    callback(null, result.toString());
+	});
+    },
+    tables: true,
+    breaks: true,
+    pedantic: false,
+    sanitize: true,
+    smartLists: true,
+    smartypants: false,
+    langPrefix: 'lang-'
 });
 
 var get = function(nid, preview){
     if(nid == 'intro'){
 	data = "Pencil - A Simple, Distraction Free Markdown Editor\n========================================\n\nI made Pencil because I needed an ** *immersive, distraction free and simple* ** environment to write out my ideas, blog posts, notes etc. Most of the 'distraction-free' editors available did not satisfy me. They either had interfaces that got in the way, or had hideous backgrounds, or had color schemes that hurt my eye. To top it off they were impossible to use on my phone or iPad. \n\nSo, here's [Pencil](/). Handles the **tab key** properly, easy to use on any screen size and **extremely minimal interface**.\n\nJust you, your text and Markdown.\n\nUsage:\n\n* Type all you want in edit mode. Markdown is supported.\n* To preview, hit Ctrl/Cmd+P or click/tap to the right of the text. Do it again to get back in edit mode.\n* To save, hit Ctrl/Cmd+S or click/tap to the left of the text. Save the URL you get.\n* To edit your note later, just visit the URL of the note.\n* Append #p to a URL to open it in Preview mode.\n\nOur users are positively *gushing* about us:\n\n>This is super awesome! If only, I had had Pencil before the elections, \n>I might have actually won!\n\n>Matt Baloney, 2012 Presidential Contestant\n\n*P.S.: Hit F11 for heaven ;)*";
-	$('#paper').val(data);
+	//$('#paper').val(data);
+	editor.setValue(data);
 	$('#loadingmode').hide();
 	$('#paper').prop('disabled', false);
 	autosize();
@@ -30,18 +31,14 @@ var get = function(nid, preview){
     $('#loadingmode').show();
     $('#paper').prop('disabled', true);
 
-    if (nid == 'new') {
-	var password = prompt("Enter the protected password for create new markdown file.");
-	var filename = prompt("Enter the filename:");
-//console.log($.md5(password));
-    }
 
     $.ajax({
 	type: 'POST',
 	url: '/api/note/get',
 	data: {id: nid},
 	success: function(data, textStatus, xhr){
-	    $('#paper').val(data);
+	    //$('#paper').val(data);
+	    editor.setValue(data);
 	    $('#loadingmode').hide();
 	    $('#paper').prop('disabled', false);
 	    autosize();
@@ -66,13 +63,15 @@ var getTid = function(){
 };
 var autosize = function(){
     window.setTimeout(function(){
-	var $t = $('#paper'), $c = $('#clone'), tv = $t.val();
+	var $t = $('#paper'), $c = $('#clone'), tv = editor.getValue();//$t.val();
 	$c.width($t.width());
 	$c.val(tv);
 	$t.css('height', $c[0].scrollTop + $c[0].scrollHeight + 'px');
 	$t.css('height', '+=50px');
     }, 0);
 };
+
+
 $.fn.selectRange = function(start, end) {
     return this.each(function() {
 	if (this.setSelectionRange) {
@@ -87,6 +86,8 @@ $.fn.selectRange = function(start, end) {
 	}
     });
 };
+
+
 $.fn.getCursorPosition = function() {
     var el = $(this).get(0);
     var pos = 0;
@@ -101,16 +102,15 @@ $.fn.getCursorPosition = function() {
     }
     return pos;
 };
+
+
 var togglePreview = function(){
     var $p = $('#paper'), $pre = $('#preview');
     if($p.is(':visible')){
 	$p.blur().hide();
-	$pre.html(marked($p.val())).show();
+	$pre.html(marked(editor.getValue())).show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
-
-
-
 
 	$(".entry").each(function () {
 
@@ -247,12 +247,13 @@ var togglePreview = function(){
 	$('#previewmode').hide();
     }
     autosize();
-    window.scrollTo(0,0);
+    //window.scrollTo(0,0);
 }
+
 var save = function(){
     if(tid == 'intro') return alert('Cannot edit this page');
     if($('#savingmode').is(':visible')) return;
-    var text = $('#paper').val();
+    var text = editor.getValue();//$('#paper').val();
     if(text.length < 1 || text == $('#paper').text()) return;				
     $('#paper').prop('disabled', true);
     $('#savingmode').show();
@@ -287,9 +288,10 @@ var save = function(){
 
 var create = function(){
     var name = prompt("Enter the note name:");
+    if (!name || name == '' ) return;
 
     if($('#savingmode').is(':visible')) return;
-    var text = $('#paper').val();
+    var text = editor.getValue(); //$('#paper').val();
     //if(text.length < 1 || text == $('#paper').text()) return;				
     $('#paper').prop('disabled', true);
     $('#savingmode').show();
@@ -320,10 +322,27 @@ var create = function(){
 	}
     });
 };
-var rename = function(){
-};
+
+/*
 var fdelete = function(){
+    if(tid == 'intro') return alert('Cannot edit this page');
+    console.log('enter ' + tid);
+    var check = confirm('You are to delete ' + tid);
+    if (check == false) return;    
+
+    $.ajax({
+	type: 'POST',
+	url: '/api/note/delete',
+	data: {t:null, id:tid},
+	success: function(data, textStatus, xhr) {
+	},
+	error: function(xhr, textStatus, error) {
+	}
+    });
+
 };
+*/
+
 
 var handleClick = function(ev, x){
     var dbw = $(document).width(), pw = $('#paper').is(':visible') ? $('#paper') : $('#preview'), pw = pw.width();
@@ -332,7 +351,9 @@ var handleClick = function(ev, x){
     else if(x < (dbw-pw)/2)
 	save();
 };
+
 var tid = getTid(), pv = tid.p, tid = tid.id;
+
 $(document).ready(function(){
     $(window).bind('popstate', function(event){
 	tid = getTid(), pv = tid.p, tid = tid.id;
@@ -341,7 +362,7 @@ $(document).ready(function(){
 	if(tid)
 	    get(tid, pv);
 	else
-	    $('#paper').val($('#paper').text()).one('keydown', function(ev){ $(this).val(''); });
+	    $('#paper').one('keydown', function(ev){ $(this).val(''); });
     });
     if(tid) get(tid, pv);
     var $paper = $('#paper');
@@ -349,6 +370,7 @@ $(document).ready(function(){
 	$paper.one('keydown', function(ev){ $(this).val(''); });
     $paper.bind('keydown', function(ev){
 	if(ev.which == 9){
+
 	    var $t = $(this);
 	    var cp = $t.getCursorPosition();
 	    var text = $t.val();
@@ -356,6 +378,7 @@ $(document).ready(function(){
 	    $t.val(text.pre+'\t'+text.post);
 	    $t.selectRange(++cp,cp);
 	    ev.preventDefault();
+
 	}
 	autosize();
     })
@@ -366,17 +389,16 @@ $(document).ready(function(){
 	.focus();
 
     $(document).bind('keydown', function(ev){
-	if(ev.which == 80 && (ev.ctrlKey || ev.metaKey)) //P
+	if(ev.which == 80 && ev.metaKey) //P
 	    togglePreview(), ev.preventDefault();
-	else if(ev.which == 83 && (ev.ctrlKey || ev.metaKey)) //S
+	else if(ev.which == 83 && ev.metaKey) //S
 	    save(), ev.preventDefault();
-	else if (ev.which == 78 && (ev.ctrlKey || ev.metaKey)) //N
+	else if (ev.which == 83 && ev.ctrlKey) //S
 	    create(), ev.preventDefault();
-	else if (ev.which == 87 && (ev.ctrlKey || ev.metaKey)) //W
-	    rename(), ev.preventDefault();
-	else if (ev.which == 127 && (ev.ctrlKey || ev.metaKey)) //DEL
-	    fdelete(), ev.preventDefault();
+//	else if (ev.which == 77 && (ev.ctrlKey || ev.metaKey)) //M
+//	    fdelete(), ev.preventDefault();
     });
+
 
     var sx;
     $(document).bind('touchstart', function(ev){
@@ -387,15 +409,28 @@ $(document).ready(function(){
 	if(Math.abs(x-sx) == 0)
 	    handleClick(ev, x);
     });
+
+
+
     $(document).bind('mouseup', function(ev){
 	handleClick(ev, ev.pageX);
     });
+
+/*
     $('#paper, #preview').bind('mouseup', function(ev){
 	ev.stopPropagation();
     }).bind('touchend', function(ev){
 	ev.stopPropagation();
     });
+
+*/
     $(window).bind('resize', function(ev){
 	autosize();
     });
 });
+
+
+
+
+
+

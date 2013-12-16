@@ -187,9 +187,21 @@ app.post('/api/note/get', function(req, res) {
 				res.writeHead(200, {'Content-Type': 'text/plain'});
 				res.end(data);					    
 			    } else {
-				console.log('File not exists');
-				res.writeHead(404);
-				res.end();
+				filePath = 'notes/0/' + POST.id + '.md';
+				fs.exists(filePath, function (exists) {
+				    if (exists) {
+					//read only
+					//console.log('File exists');
+					data = fs.readFileSync(filePath);
+					res.writeHead(200, {'Content-Type': 'text/plain'});
+					res.end(data);					    
+				    }
+				    else {
+					console.log('File not exists');
+					res.writeHead(404);
+					res.end();
+				    }
+				});
 			    }
 			});
 		    }
