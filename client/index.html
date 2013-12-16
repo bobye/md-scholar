@@ -1,115 +1,115 @@
 <!doctype html>
 <html>
-	<head>
-		<title>Pencil</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="description" content="Pencil, a minimal, distraction-free markdown editor that is accessible on any device.">
-		<link rel="canonical" href="http://pencil.jianbo.ws" />
-		<style type="text/css">
-			html{
-				width: 100%;
-				height: 100%;			
-			}
-			body{
-				background-color: #272822;
-				width: 98%;			
-			}
-			#paper{
-			width: 100%; 
-			height: 100%;
-			outline: none;
-			border: 0px;
-			resize: none;
-			}
-			#paper, #preview, .mode{
-				font-family: Calibri, Sans-serif;
-				font-size: 1.2em;
-				line-height: 1.25;
-				color: #cfcfcf;
-				background-color: #272822;
-			}
-			#paper, #preview{
-			margin-bottom: 0px;
-			min-height: 750px;
-			}
-			#preview {
-			font-size: 12pt;
-			font-family: Arial, Helvetica, sans-serif;
-			}
-			#preview h1, h2, h3, h4, h4, h6 {
-			font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-			}
-			#paper{
-			font-size: 10pt;
-			font-family: "Lucida Console", Monaco, monospace;
-			}
-			#clone{
-				left: -100000px;
-				height: auto;
-				position: absolute;
-			}
-			#container{
-				width: 90%;
-				max-width: 750px;
-				margin: auto;
-				margin-top: 50px;
-			}
-			#preview{
-				display: none;
-			}
-			#preview a{
-				color: #00a2e8;
-				text-decoration: none;
-			}
-			#paper{
-				overflow: hidden;
-			}
-			.mode{
-				position: fixed;
-				top: 0.25em;
-				left: 0.25em;
-				display: none;
-			}
-			.entry {
-			color: #00a2e8;
-			display: inline;
-			}
-			.description {
-			font-size: 10pt;
-			color: #000;
-			background: #888;
-			display:none;
-			position:absolute;
-			width:400px;
-			}			
+  <head>
+    <title>Pencil++</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Pencil++, a minimal, distraction-free markdown scholar editor that is accessible on any device.">
+    <link rel="canonical" href="http://pencil.jianbo.ws" />
+    <style type="text/css">
+      html{
+      width: 100%;
+      height: 100%;			
+      }
+      body{
+      background-color: #272822;
+      width: 98%;			
+      }
+      #paper{
+      width: 100%; 
+      height: 100%;
+      outline: none;
+      border: 0px;
+      resize: none;
+      }
+      #paper, #preview, .mode{
+      font-family: Calibri, Sans-serif;
+      font-size: 1.2em;
+      line-height: 1.25;
+      color: #cfcfcf;
+      background-color: #272822;
+      }
+      #paper, #preview{
+      margin-bottom: 0px;
+      min-height: 750px;
+      }
+      #preview {
+      font-size: 12pt;
+      font-family: Arial, Helvetica, sans-serif;
+      }
+      #preview h1, h2, h3, h4, h4, h6 {
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+      }
+      #paper{
+      font-size: 10pt;
+      font-family: "Lucida Console", Monaco, monospace;
+      }
+      #clone{
+      left: -100000px;
+      height: auto;
+      position: absolute;
+      }
+      #container{
+      width: 90%;
+      max-width: 750px;
+      margin: auto;
+      margin-top: 50px;
+      }
+      #preview{
+      display: none;
+      }
+      #preview a{
+      color: #00a2e8;
+      text-decoration: none;
+      }
+      #paper{
+      overflow: hidden;
+      }
+      .mode{
+      position: fixed;
+      top: 0.25em;
+      left: 0.25em;
+      display: none;
+      }
+      .entry {
+      color: #00a2e8;
+      display: inline;
+      }
+      .description {
+      font-size: 10pt;
+      color: #000;
+      background: #888;
+      display:none;
+      position:absolute;
+      width:400px;
+      }			
 
-			#preview .description a {color: red;}
+      #preview .description a {color: red;}
 
-		</style>
-	</head>
-	<body>
-		<div id="container">
-		  <div id="paper">Markdown Supported. Just Type.</div>		
-			<div id="preview"></div>
-			<textarea id="clone" disabled="true"></textarea>
-			<div id="previewmode" class="mode">Preview</div>
-			<div id="savingmode" class="mode">Saving...</div>
-			<div id="savedlabel" class="mode">Saved. Use this page's URL to edit later.</div>
-			<div id="loadingmode" class="mode">Loading...</div>
-		</div>
-		<script type="text/javascript" src="js/lib/jquery-1.8.2.min.js"></script>
-		<script type="text/javascript" src="js/lib/marked.min.js"></script>
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="paper">Markdown Supported. Just Type.</div>		
+      <div id="preview"></div>
+      <textarea id="clone" disabled="true"></textarea>
+      <div id="previewmode" class="mode">Preview</div>
+      <div id="savingmode" class="mode">Saving...</div>
+      <div id="savedlabel" class="mode">Saved. Use this page's URL to edit later.</div>
+      <div id="loadingmode" class="mode">Loading...</div>
+    </div>
+    <script type="text/javascript" src="js/lib/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/lib/marked.min.js"></script>
 
-		<script src="js/lib/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-		<script>
-		  var editor = ace.edit("paper");
-		  editor.setTheme("ace/theme/twilight");
-		  editor.getSession().setMode("ace/mode/markdown");
-		  editor.getSession().setUseWrapMode(true);
-		</script>
+    <script src="js/lib/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      var editor = ace.edit("paper");
+      editor.setTheme("ace/theme/twilight");
+      editor.getSession().setMode("ace/mode/markdown");
+      editor.getSession().setUseWrapMode(true);
+    </script>
 
-		<script type="text/javascript" src="js/pencil.js"></script>
-	</body>
+    <script type="text/javascript" src="js/pencil.js"></script>
+  </body>
 </html>
 

@@ -40,39 +40,41 @@ This is the setup I'm using to host Pencil. It might or might not work well for 
 	* id SERIAL PKEY
 	* note VARCHAR(3000)
 	* hash VARCHAR UNIQUE
-* Run app.js using node.
+* Run appexpress.js using node.
 
 
 Sample configuration for Nginx
-
 ```
     upstream app_nodejs {
-        server 127.0.0.1:3215;
+	server localhost:20661;
     }
 
     server {
-        listen       8080;
-        server_name  localhost;
+        listen             17735;
+        passenger_enabled  off;
+        server_name        localhost;
 
-        #charset koi8-r;
-        #access_log  logs/host.access.log  main;
-
-        location / {
-            root   /Users/bobye/Dropbox/code/pencil/client;
-            try_files  $uri  /index.html;
-        }
-
+	location / {
+		root  /home/robo/webapps/pencil_client/pencil/client;
+		try_files 	$uri /index.html;
+	}
 	location /api {
-	    proxy_pass http://app_nodejs;
+		proxy_pass http://app_nodejs;
+	}
+	location /login {
+		proxy_pass http://app_nodejs;
+	}
+	location /logout {
+		proxy_pass http://app_nodejs;
 	}
 
 	location /dblp {
-	    proxy_pass http://dblp.uni-trier.de/rec/bibtex;
+		proxy_pass http://dblp.uni-trier.de/rec/bibtex;
 	}
-
 	location /arxiv {
-	    proxy_pass http://export.arxiv.org/api;
+		proxy_pass http://export.arxiv.org/api;
 	}
+    }
 ```
 
 
