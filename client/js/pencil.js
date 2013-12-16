@@ -62,12 +62,15 @@ var getTid = function(){
     return {id: tid.length == 0 ? null : tid, p: window.location.hash.toLowerCase() == '#p' ? true : false};
 };
 var autosize = function(){
+
     window.setTimeout(function(){
 	var $t = $('#paper'), $c = $('#clone'), tv = editor.getValue();//$t.val();
 	$c.width($t.width());
 	$c.val(tv);
+/*
 	$t.css('height', $c[0].scrollTop + $c[0].scrollHeight + 'px');
 	$t.css('height', '+=50px');
+*/
     }, 0);
 };
 
