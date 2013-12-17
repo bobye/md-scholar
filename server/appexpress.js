@@ -127,15 +127,11 @@ app.post('/api/note/edit', function(req, res) {
 	    v = [POST.t, hash];
 	    
 	    client.query(q + ' RETURNING id', v, function(err, result){
-		if(err || !result.rows){
-		    res.writeHead(500);
-		    res.end();
-		}
-		else if (result.rows.length > 0) {
+		if (result && result.rows.length > 0) {
 		    res.writeHead(200, {'Content-Type': 'text/plain'});
 		    res.end(hash);
 		}
-		else {
+		else if (req.session.passport.user) {
 		    // working with filesystem may not be a good idea
 		    var filePath = 'notes/' + req.session.passport.user + '/' + POST.id + '.md';
 		    fs.exists(filePath, function (exists) {
@@ -151,6 +147,11 @@ app.post('/api/note/edit', function(req, res) {
 			}
 		    });		    
 		}
+		else if (err || !result.rows){
+		    res.writeHead(500);
+		    res.end();
+		}
+
 	    });
 	}
 	done();						
