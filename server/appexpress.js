@@ -2,7 +2,8 @@ var http = require('http');
 var url = require('url');
 var pg = require('pg');
 var fs = require('fs');
-var conString = "tcp://bobye@localhost/pencildb";
+var config = require('./config.js');
+var conString = config.conString;
 
 var express = require('express');
 var app = express();
@@ -10,10 +11,7 @@ var app = express();
 var passport = require('passport'),
 LocalStrategy = require('passport-local').Strategy;
 
-var users = [
-    { id: 1, username: 'bob', password: 'secret', email: 'bob@example.com' },
-    { id: 2, username: 'joe', password: 'birthday', email: 'joe@example.com' }
-];
+var users = config.users;
 
 function findById(id, fn) {
     var idx = id - 1;
@@ -83,7 +81,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://127.0.0.1:8080");
+    res.header("Access-Control-Allow-Origin", config.domain);
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next();
@@ -247,5 +245,5 @@ app.get('/hello.txt', function(req, res){
     res.send('Hello World');
 });
 
-app.listen(3215);
-console.log('Server listening at port 3215');
+app.listen(config.port);
+console.log('Server listening at port ' + config.port.toString());
