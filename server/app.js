@@ -2,7 +2,8 @@ var qs = require('querystring');
 var http = require('http');
 var url = require('url');
 var pg = require('pg');
-var conString = "tcp://jxy198@127.0.0.1/pencildb";
+var fs = require('fs');
+var conString = "tcp://bobye@localhost/pencildb";
 
 http.createServer(function (request, response) {
 
@@ -24,7 +25,7 @@ http.createServer(function (request, response) {
             var POST = qs.parse(body);
             var path = url.parse(request.url).pathname;
             pg.connect(conString, function(err, client){
-                if(err){
+	        if(err){
                     response.writeHead(500);
                     response.end();
                 }
@@ -52,16 +53,37 @@ http.createServer(function (request, response) {
                     else if(path == '/api/note/get'){
                         if(POST.id && POST.id.length > 0){
                             client.query('SELECT * FROM notes WHERE hash=$1', [POST.id], function(err, result){
-                                if(err || !(result.rows && result.rows.length > 0)){
-                                    response.writeHead(err ? 500 : 404);
+			        if (err) {
+                                    response.writeHead(500);
                                     response.end();
                                 }
-                                else{
+                                else if (result.rows && result.rows.length > 0) {//retrieve from postgres
                                     //response.writeHead(200, {'Content-Type': 'text/plain'});
                                     response.writeHead(200, {'Content-Type': 'text/plain',
 							     'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'});
                                     response.end(result.rows[0].note);
                                 }
+				else {
+				    var filePath = 'notes/' + POST.id + '.md';
+				    fs.exists(filePath, function (exists) {
+					    if (exists) {
+						//console.log('File exists');
+						fs.readFile(filePath, function(err, data) {
+							if (err) {
+							    response.writeHead(500);
+							    response.end();
+							};
+				    response.writeHead(200, {'Content-Type': 'text/plain',
+						             'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'});
+				    response.end(data);
+						    });
+					    } else {
+						//console.log('File not exists');
+						response.writeHead(404);
+						response.end();
+					    }
+					});
+				}
                             });
                         }
                         else{                            
