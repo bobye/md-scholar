@@ -106,14 +106,50 @@ $.fn.getCursorPosition = function() {
     return pos;
 };
 
+/**
+ * Get scrollHeight of preview div
+ * (code adapted from https://github.com/anru/rsted/blob/master/static/scripts/editor.js)
+ *
+ * @param {Object} The jQuery object for the preview div
+ * @return {Int} The scrollHeight of the preview area (in pixels)
+ */
+function getScrollHeight($prevFrame) {
+    // Different browsers attach the scrollHeight of a document to different
+    // elements, so handle that here.
+    if ($prevFrame[0].scrollHeight !== undefined) {
+        return $prevFrame[0].scrollHeight;
+    } else if ($prevFrame.find('html')[0].scrollHeight !== undefined &&
+               $prevFrame.find('html')[0].scrollHeight !== 0) {
+        return $prevFrame.find('html')[0].scrollHeight;
+    } else {
+        return $prevFrame.find('body')[0].scrollHeight;
+    }
+}
+
+function syncPreview() {
+  var editorScrollRange = (editor.getSession().getLength());
+
+  var previewScrollRange = (getScrollHeight($('body')));
+
+  // Find how far along the editor is (0 means it is scrolled to the top, 1
+  // means it is at the bottom).
+  var scrollFactor = editor.getFirstVisibleRow() / editorScrollRange;
+
+  // Set the scroll position of the preview pane to match.  jQuery will
+  // gracefully handle out-of-bounds values.
+  $('body').scrollTop(scrollFactor * previewScrollRange);
+}
 
 var togglePreview = function(){
     var $p = $('#paper'), $pre = $('#preview');
     if($p.is(':visible')){
 	$p.blur().hide();
-	$pre.html(marked(editor.getValue())).show();
+	$pre.html(marked(editor.getValue()) + 
+		  '<div class="clear">Copyright &#169; 2014 <a href="http://jianbo.ws/">bobye</a>. Powered by <a href="faq#p">Pencil++</a>. </div>').show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
+
+	syncPreview()
 
 	$(".entry").each(function () {
 
