@@ -1,19 +1,12 @@
 // Pencil App - WARNING : Rampant jQuery Selector Abuse and Pathetic Variable Naming follows. I was lazy.
 marked.setOptions({
     gfm: true,
-    highlight: function (code, lang, callback) {
-	pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
-	    if (err) return callback(err);
-	    callback(null, result.toString());
-	});
-    },
     tables: true,
     breaks: true,
     pedantic: false,
     sanitize: true,
     smartLists: true,
-    smartypants: false,
-    langPrefix: 'lang-'
+    smartypants: false
 });
 
 var get = function(nid, preview){
@@ -149,6 +142,10 @@ var togglePreview = function(){
 		  '<hr/><div class="clear">Copyright &#169; 2014 <a href="http://jianbo.ws/">bobye</a>. Powered by <a href="faq#p">Pencil++</a>. </div>').show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
+
+
+	$('pre code').each(function(i, e) {hljs.highlightBlock(e)});
+
 
 	syncPreview()
 

@@ -1,2 +1,5 @@
 nginx/*
 *.log
+client/js/lib/*
+*~
+server/notes/*
