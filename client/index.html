@@ -12,11 +12,10 @@
       height: 100%;			
       }
       body{
+      height: 100%;
       background-color: #272822;
       width: 98%;			
-      }
-      .clear {
-      height:50px;
+      overflow: auto;
       }
       #paper{
       width: 100%; 
@@ -58,6 +57,7 @@
       max-width: 750px;
       margin: auto;
       margin-top: 50px;
+      height: 95%;
       }
       #preview{
       display: none;
@@ -69,6 +69,7 @@
       #paper{
       overflow: hidden;
       }
+      .clear { height: 50px;}
       .mode{
       position: fixed;
       top: 0.25em;
@@ -102,7 +103,6 @@
       <div id="savedlabel" class="mode">Saved. Use this page's URL to edit later.</div>
       <div id="loadingmode" class="mode">Loading...</div>
     </div>
-    <div class="clear"></div>
     <script type="text/javascript" src="js/lib/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="js/lib/marked.min.js"></script>
 

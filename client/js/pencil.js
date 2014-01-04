@@ -133,7 +133,8 @@ function syncPreview() {
 
   // Find how far along the editor is (0 means it is scrolled to the top, 1
   // means it is at the bottom).
-  var scrollFactor = editor.getFirstVisibleRow() / editorScrollRange;
+
+  var scrollFactor = editor.getFirstVisibleRow() / (editorScrollRange - 20);
 
   // Set the scroll position of the preview pane to match.  jQuery will
   // gracefully handle out-of-bounds values.
@@ -145,7 +146,7 @@ var togglePreview = function(){
     if($p.is(':visible')){
 	$p.blur().hide();
 	$pre.html(marked(editor.getValue()) + 
-		  '<div class="clear">Copyright &#169; 2014 <a href="http://jianbo.ws/">bobye</a>. Powered by <a href="faq#p">Pencil++</a>. </div>').show();
+		  '<hr/><div class="clear">Copyright &#169; 2014 <a href="http://jianbo.ws/">bobye</a>. Powered by <a href="faq#p">Pencil++</a>. </div>').show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
 
