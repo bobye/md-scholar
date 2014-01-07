@@ -138,8 +138,7 @@ var togglePreview = function(){
     var $p = $('#paper'), $pre = $('#preview');
     if($p.is(':visible')){
 	$p.blur().hide();
-	$pre.html(marked(editor.getValue()) + 
-		  '<hr/><div class="clear">Copyright &#169; 2014 <a href="http://jianbo.ws/">bobye</a>. Powered by <a href="faq#p">Pencil++</a>. </div>').show();
+	$pre.html(marked(editor.getValue())).show();
 	$('#previewmode').show();
 	$pre.find('a').attr('target', '_blank');
 
