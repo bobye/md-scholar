@@ -391,31 +391,11 @@ var handleClick = function(ev, x){
 var tid = getTid(), pv = tid.p, tid = tid.id;
 
 $(document).ready(function(){
-    $(window).bind('popstate', function(event){
-	tid = getTid(), pv = tid.p, tid = tid.id;
-	if($('#preview').is(':visible'))
-	    togglePreview();
-	if(tid)
-	    get(tid, pv);
-	else
-	    $('#paper').one('keydown', function(ev){ $(this).val(''); });
-    });
     if(tid) get(tid, pv);
     var $paper = $('#paper');
     if(!tid)
-	$paper.one('keydown', function(ev){ $(this).val(''); });
+	$paper.one('click', function(ev){ editor.setValue(''); });
     $paper.bind('keydown', function(ev){
-	if(ev.which == 9){
-
-	    var $t = $(this);
-	    var cp = $t.getCursorPosition();
-	    var text = $t.val();
-	    text = {pre: text.substr(0,cp), post: text.substr(cp)};
-	    $t.val(text.pre+'\t'+text.post);
-	    $t.selectRange(++cp,cp);
-	    ev.preventDefault();
-
-	}
 	autosize();
     })
 	.bind('change', autosize)
