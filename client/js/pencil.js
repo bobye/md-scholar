@@ -195,7 +195,7 @@ var togglePreview = function(){
 			+ '<span class="description"></span>');
 
 		$.ajax({
-		    type: 'POST',
+		    type: 'GET',
 		    url: '/dblp/' + ent.key + '.xml',
 		    dataType: 'xml',
 		    //async: false,
