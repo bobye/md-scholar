@@ -91,6 +91,7 @@ app.all('*', function(req, res, next) {
 app.post('/login', 
 	 passport.authenticate('local', { failureRedirect: '/hello.txt'}),
 	 function(req, res) {
+	     req.session.IDs = [];// create list of POST.id
 	     res.redirect('/');
 	 });
 
@@ -181,6 +182,16 @@ app.post('/api/note/get', function(req, res) {
 			var filePath = 'notes/' + req.session.passport.user + '/' + POST.id + '.md';
 			fs.exists(filePath, function (exists) {
 			    if (exists) {
+				/* insert to the head of array */
+				var present = req.session.IDs.indexOf(POST.id);
+				if (present>-1) req.session.IDs.splice(present, 1);
+				req.session.IDs.unshift(POST.id);
+				//req.session.IDs.push(POST.id);
+				if (req.session.IDs.length > 20) 
+				    req.session.IDs.pop();
+
+				//console.log(req.session.IDs);
+
 				console.log('File exists');
 				data = fs.readFileSync(filePath);
 				res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -229,6 +240,15 @@ app.post('/api/note/create', function(req, res) {
 	    } else {
 		console.log('File not exists');
 		//create file
+		var present = req.session.IDs.indexOf(POST.id);
+		if (present>-1) req.session.IDs.splice(present, 1);
+		req.session.IDs.unshift(POST.id);
+		//req.session.IDs.push(POST.id);
+		if (req.session.IDs.length > 20) 
+		    req.session.IDs.pop();
+
+		//console.log(req.session.IDs);
+
 		fs.writeFileSync(filePath, POST.t);		
 		res.writeHead(201);
 		res.end(POST.id);
@@ -236,6 +256,13 @@ app.post('/api/note/create', function(req, res) {
 	});	
     }	    
 });
+
+app.post('/api/note/history', function(req, res) {
+    res.writeHead(200);
+    res.write(JSON.stringify(req.session.IDs));
+    res.end();
+});
+
 app.post('/api/note/rename', function(req, res) {
 });
 app.post('/api/note/delete', function(req, res) {

@@ -9,6 +9,8 @@ marked.setOptions({
     smartypants: false
 });
 
+var history = [];
+
 var get = function(nid, preview){
     if(nid == 'intro'){
 	data = "Pencil - A Simple, Distraction Free Markdown Editor\n========================================\n\nI made Pencil because I needed an ** *immersive, distraction free and simple* ** environment to write out my ideas, blog posts, notes etc. Most of the 'distraction-free' editors available did not satisfy me. They either had interfaces that got in the way, or had hideous backgrounds, or had color schemes that hurt my eye. To top it off they were impossible to use on my phone or iPad. \n\nSo, here's [Pencil](/). Handles the **tab key** properly, easy to use on any screen size and **extremely minimal interface**.\n\nJust you, your text and Markdown.\n\nUsage:\n\n* Type all you want in edit mode. Markdown is supported.\n* To preview, hit Ctrl/Cmd+P or click/tap to the right of the text. Do it again to get back in edit mode.\n* To save, hit Ctrl/Cmd+S or click/tap to the left of the text. Save the URL you get.\n* To edit your note later, just visit the URL of the note.\n* Append #p to a URL to open it in Preview mode.\n\nOur users are positively *gushing* about us:\n\n>This is super awesome! If only, I had had Pencil before the elections, \n>I might have actually won!\n\n>Matt Baloney, 2012 Presidential Contestant\n\n*P.S.: Hit F11 for heaven ;)*";
@@ -24,6 +26,22 @@ var get = function(nid, preview){
     $('#loadingmode').show();
     $('#paper').prop('disabled', true);
 
+    $.ajax({
+	type: 'POST',
+	url: '/api/note/history',
+	success: function(data, textStatus, xhr) {
+	    console.log(data);
+	    history = JSON.parse(data);
+	    var listHTML = "<ul>";
+	    for (i=0;i<history.length; i++)
+		listHTML += '<li><a href="'+history[i]+'">' + history[i] + '</a></li>';
+	    listHTML += "</ul>"
+	    $('#sidebar').html(listHTML);
+	},
+	error: function(xhr, textStatus, error) {
+	    console.log('error');
+	}
+    });
 
     $.ajax({
 	type: 'POST',
