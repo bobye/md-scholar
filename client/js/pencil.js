@@ -9,7 +9,7 @@ marked.setOptions({
     smartypants: false
 });
 
-var history = [];
+var historynid = [];
 
 var get = function(nid, preview){
     if(nid == 'intro'){
@@ -31,10 +31,10 @@ var get = function(nid, preview){
 	url: '/api/note/history',
 	success: function(data, textStatus, xhr) {
 	    console.log(data);
-	    history = JSON.parse(data);
+	    historynid = JSON.parse(data);
 	    var listHTML = "<ul>";
 	    for (i=0;i<history.length; i++)
-		listHTML += '<li><a href="'+history[i]+'">' + history[i] + '</a></li>';
+		listHTML += '<li><a href="'+historynid[i]+'">' + historynid[i] + '</a></li>';
 	    listHTML += "</ul>"
 	    $('#sidebar').html(listHTML);
 	},
