@@ -34,7 +34,7 @@ var get = function(nid, preview){
 	    historynid = JSON.parse(data);
 	    var listHTML = "<ul>";
 	    for (i=0;i<history.length; i++)
-		listHTML += '<li><a href="'+historynid[i]+'">' + historynid[i] + '</a></li>';
+		listHTML += '<li><a href="'+historynid[i]+'#p">' + historynid[i] + '</a></li>';
 	    listHTML += "</ul>"
 	    $('#sidebar').html(listHTML);
 	},
