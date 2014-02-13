@@ -158,7 +158,7 @@ var togglePreview = function(){
 	$p.blur().hide();
 	$pre.html(marked(editor.getValue())).show();
 	$('#previewmode').show();
-	$pre.find('a').attr('target', '_blank');
+//	$pre.find('a').attr('target', '_blank');
 
 
 	$('pre code').each(function(i, e) {hljs.highlightBlock(e)});
