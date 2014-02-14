@@ -14,37 +14,3 @@ This is the setup I'm using to host Pencil++. It might or might not work well fo
 	* hash VARCHAR UNIQUE
 * Run appexpress.js using node.
 
-
-Sample configuration for Nginx
-
-    upstream app_nodejs {
-	server localhost:20661;
-    }
-
-    server {
-        listen             17735;
-        passenger_enabled  off;
-        server_name        localhost;
-
-	location / {
-		root  /home/robo/webapps/pencil_client/pencil/client;
-		try_files 	$uri /index.html;
-	}
-	location /api {
-		proxy_pass http://app_nodejs;
-	}
-	location /login {
-		proxy_pass http://app_nodejs;
-	}
-	location /logout {
-		proxy_pass http://app_nodejs;
-	}
-
-	location /dblp {
-		proxy_pass http://dblp.uni-trier.de/rec/bibtex;
-	}
-	location /arxiv {
-		proxy_pass http://export.arxiv.org/api;
-	}
-    }
-
