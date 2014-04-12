@@ -2,7 +2,7 @@ Markdown-Scholar
 ================
 
 ###License
->**This code is released under the MIT license. No guarantees are meant or implied. Use at your own risk.**
+>**This code is released under [the MIT license](http://opensource.org/licenses/MIT). No guarantees are meant or implied. Use at your own risk.**
 
 ###Installation
 
